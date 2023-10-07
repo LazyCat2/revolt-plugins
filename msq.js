@@ -13,9 +13,11 @@ const hell = ()=>{
                 console.log(c)
                 c.on("message", msg=>{
                         let cancel = false
+                        let persona = JSON.parse(localStorage.MSQ).personas.find(p=>msg.content.startsWith(p.prefix))
+                        
                         Array.from([
                                 [msg.author.id != c.user.id, "Message send not by you"],
-                                [!currentPersona, "`currentPersona` is null (probably there is no prefix)"],
+                                [!persona, "`persona` is null (probably there is no prefix)"],
                                 [!window.location.href.includes(msg.channel_id), "You are selected other channel than message's"], // not sure if I spelled it correctly
                                 [msg.masquerade, "Message already has masquerade"]
                         ]).forEach(cond=>{
@@ -27,10 +29,10 @@ const hell = ()=>{
                         })
                         if (cancel) return
                         c.channels.get(msg.channel_id).sendMessage({masquerade: {
-                           colour: currentPersona.color,
-                           name: currentPersona.name,
-                           avatar: currentPersona.avatar
-                        }, content: msg.content.substring(currentPersona.prefix.length)})
+                           colour: persona.color,
+                           name: persona.name,
+                           avatar: persona.avatar
+                        }, content: msg.content.substring(persona.prefix.length)})
                         msg.delete()
                         sendAs.remove()
                         sendAs = null
