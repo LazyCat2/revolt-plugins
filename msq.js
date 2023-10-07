@@ -12,13 +12,20 @@ const hell = ()=>{
         if (c) {
                 console.log(c)
                 c.on("message", msg=>{
-                        console.log(msg)
-                        if (
-                                msg.author.id != c.user.id
-                         ||!currentPersona
-                         ||!window.location.href.includes(msg.channel_id)
-                         || msg.masquerade
-                        ) return console.log("NO")
+                        let cancel = false
+                        Array.from([
+                                [msg.author.id != c.user.id, "Message send not by you"],
+                                [!currentPersona, "`currentPersona` is null (probably there is no prefix)"],
+                                [!window.location.href.includes(msg.channel_id), "You are selected other channel than message's"], // not sure if I spelled it correctly
+                                [msg.masquerade, "Message already has masquerade"]
+                        ]).forEach(cond=>{
+                                if (cancel) return
+                                if (cond[0]) {
+                                        MSQ.log("Message ignored: " + cond[1])
+                                        cancel = true
+                                }
+                        })
+                        if (cancel) return
                         c.channels.get(msg.channel_id).sendMessage({masquerade: {
                            colour: currentPersona.color,
                            name: currentPersona.name,
