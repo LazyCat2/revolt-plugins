@@ -1,4 +1,4 @@
-# masquerade-revolt-plugin
+# Masquerade plugin
 A revolt plugin that makes you able to use masquerade
 
 ## Instalation
@@ -15,8 +15,7 @@ xhr.onload = function() {
       id: "masquerade",
       entrypoint: xhr.response
   })
-  delete xhr
-    window.location.reload()
+  window.location.reload()
 };
 ```
 
