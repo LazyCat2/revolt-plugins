@@ -7,6 +7,47 @@ if (!localStorage.MSQ)
                 personas: []
         })
 
+const sendPluginMessage = text=>{
+        var message = document.createElement("DIV")
+        var usernameContainer = document.createElement("DIV")
+        var username = document.createElement("P")
+        var badge = document.createElement("DIV") // UserShort__BotBadge-sc-1sbe9n1-0 cYjFcE
+        var del = document.createElement("BUTTON")
+        var textElem = document.createElement("P")
+
+        username.innerText = "LazyCat2/masquerade"
+        username.style.fontWeight = "bold"
+        username.style.margin = "0px"
+
+        badge.innerText = "PLUGIN"
+        badge.classList.add("UserShort__BotBadge-sc-1sbe9n1-0")
+        badge.classList.add("cYjFcE")
+
+        del.innerText = "Hide error"
+        del.style.marginLeft = '10px'
+        del.addEventListener("click", ()=>{
+                message.remove()
+        })
+
+        usernameContainer.style.display = 'flex'
+        usernameContainer.style.alignItems = 'center'
+
+        textElem.innerText = text
+        textElem.style.margin = "10px 0px"
+
+        usernameContainer.append(username)
+        usernameContainer.append(badge)
+        usernameContainer.append(del)
+
+        message.style.paddingLeft = '65px'
+        message.style.backgroundColor = "var(--mention)"
+
+        message.append(usernameContainer)
+        message.append(textElem)
+
+        document.querySelector(".MessageArea__Area-sc-1q4cka6-0.kpVPRw > div").append(message)
+}
+
 const hell = ()=>{
         c = client()
         if (c) {
@@ -14,7 +55,7 @@ const hell = ()=>{
                 c.on("message", msg=>{
                         var cancel = false
                         var persona = JSON.parse(localStorage.MSQ).personas.find(p=>msg.content.startsWith(p.prefix))
-						                        
+                                                                        
                         Array.from([
                                 [msg.author.id != c.user.id, "Message send not by you"],
                                 [!persona, "`persona` is null (probably there is no prefix)"],
@@ -28,12 +69,25 @@ const hell = ()=>{
                                 }
                         })
                         if (cancel) return
-                        c.channels.get(msg.channel_id).sendMessage({masquerade: {
-                           colour: persona.color,
-                           name: persona.name,
-                           avatar: persona.avatar
-                        }, content: msg.content.substring(persona.prefix.length)})
-                        msg.delete()
+                        c.channels.get(msg.channel_id).sendMessage({
+                                masquerade: {
+                                        colour: persona.color,
+                                        name: persona.name,
+                                        avatar: persona.avatar
+                                },
+                                content: msg.content.substring(persona.prefix.length), 
+                                replies: Array.from(msg.reply_ids).map(
+                                        reply=>({id: reply, mention: false})
+                                )
+                        })
+                        .then(_=>msg.delete())
+                        .catch(error=>{
+                        try{
+                        sendPluginMessage(`Following error occured when attempted to send masqueraded message. Original message will not be deleted
+\`\`\`
+${error.stack}
+\`\`\``)}catch(e){console.error(e)}
+                       })
                         sendAs.remove()
                         sendAs = null
                 })
