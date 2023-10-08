@@ -57,7 +57,7 @@ const hell = ()=>{
                         var persona = JSON.parse(localStorage.MSQ).personas.find(p=>msg.content.startsWith(p.prefix))
                                                                         
                         Array.from([
-                                [msg.author.id != c.user.id, "Message send not by you"],
+                                [msg.author._id != c.user._id, "Message send not by you"],
                                 [!persona, "`persona` is null (probably there is no prefix)"],
                                 [!window.location.href.includes(msg.channel_id), "You are selected other channel than message's"], // not sure if I spelled it correctly
                                 [msg.masquerade, "Message already has masquerade"]
