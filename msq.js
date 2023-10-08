@@ -193,9 +193,13 @@ var PersonaList = ()=>{
                         personas.forEach(pers=>{
                                 let persInfo = standartDiv()
                                 let avatarAndUsername = document.createElement("DIV")
+                                let right = document.createElement("DIV")
+                                
                                 let avatar = document.createElement("IMG")
                                 let username = document.createElement("P")
+
                                 let prefix = document.createElement("P")
+                                let delPersona = document.createElement("BUTTON")
 
                                 avatar.src = pers.avatar || client().user.generateAvatarURL()
                                 avatar.style.borderRadius = '100%'
@@ -204,18 +208,31 @@ var PersonaList = ()=>{
                                 avatar.style.marginRight = '10px'
 
                                 username.innerText = pers.name || client().user.username
-                                username.style.color = pers.color
+                                //username.style.color = pers.color
 
                                 prefix.innerText = pers.prefix
 
                                 avatarAndUsername.style.display = 'flex'
                                 avatarAndUsername.style.alignItems = "center"
 
+                                                                delPersona.innerText = "DEL"
+                                delPersona.addEventListener("click", ()=>{
+                                        persInfo.remove()
+                                        var savedData = JSON.parse(localStorage.MSQ)
+                                        savedData.personas.splice(savedData.personas.findIndex(a=>a==pers), 1)
+                                        localStorage.MSQ = JSON.stringify(savedData)
+                                })
+
+                                right.style.display = 'flex'
+
                                 avatarAndUsername.append(avatar)
                                 avatarAndUsername.append(username)
 
+                                                                right.append(prefix)
+                                                                right.append(delPersona)
+
                                 persInfo.append(avatarAndUsername)
-                                persInfo.append(prefix)
+                                persInfo.append(right)
 
                                 list.append(persInfo)
                         })
