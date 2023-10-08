@@ -1,6 +1,6 @@
-()=>{
-
 const client = ()=>{return controllers.client.getReadyClient()};
+
+()=>{
 
 if (!localStorage.MSQ)
         localStorage.MSQ = JSON.stringify({
@@ -12,9 +12,9 @@ const hell = ()=>{
         if (c) {
                 console.log(c)
                 c.on("message", msg=>{
-                        let cancel = false
-                        let persona = JSON.parse(localStorage.MSQ).personas.find(p=>msg.content.startsWith(p.prefix))
-                        
+                        var cancel = false
+                        var persona = JSON.parse(localStorage.MSQ).personas.find(p=>msg.content.startsWith(p.prefix))
+						                        
                         Array.from([
                                 [msg.author.id != c.user.id, "Message send not by you"],
                                 [!persona, "`persona` is null (probably there is no prefix)"],
@@ -38,8 +38,8 @@ const hell = ()=>{
                         sendAs = null
                 })
         } else {
-                let alrt = standartDiv()
-                let t = document.createElement("P")
+                var alrt = standartDiv()
+                var t = document.createElement("P")
 
                 t.innerText = "WARNING: Masquerade plugin won't work because it can't get client object, click here when client fully loads"
 
@@ -64,7 +64,7 @@ const onMessageTextareaInput = function(){
                 if (menu) menu.remove()
                 MSQ.isShowed = false
 
-                let pers = JSON.parse(localStorage.MSQ).personas.find(p=>this.value.startsWith(p.prefix))
+                var pers = JSON.parse(localStorage.MSQ).personas.find(p=>this.value.startsWith(p.prefix))
 
                 if (pers && pers != currentPersona) {
                         if (sendAs) {
@@ -346,6 +346,4 @@ return {
         MSQ.log("Plugin has been disabled")
     
     }
-}
-
-}
+}}
