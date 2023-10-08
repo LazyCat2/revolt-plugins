@@ -76,7 +76,7 @@ const hell = ()=>{
                                         avatar: persona.avatar
                                 },
                                 content: msg.content.substring(persona.prefix.length), 
-                                replies: Array.from(msg.reply_ids).map(
+                                replies: Array.from(msg.reply_ids || []).map(
                                         reply=>({id: reply, mention: false})
                                 )
                         })
