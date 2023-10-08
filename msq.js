@@ -57,8 +57,8 @@ const hell = ()=>{
                         var persona = JSON.parse(localStorage.MSQ).personas.find(p=>msg.content.startsWith(p.prefix))
                                                                         
                         Array.from([
-                                [msg.author._id != c.user._id, "Message send not by you"],
-                                [!persona, "`persona` is null (probably there is no prefix)"],
+                                [msg.author._id != c.user._id, "Message was not sent by you."],
+                                [!persona, "`persona` is null (There is probably no prefix.)"],
                                 [!window.location.href.includes(msg.channel_id), "You are selected other channel than message's"], // not sure if I spelled it correctly
                                 [msg.masquerade, "Message already has masquerade"]
                         ]).forEach(cond=>{
@@ -75,7 +75,13 @@ const hell = ()=>{
                                         name: persona.name,
                                         avatar: persona.avatar
                                 },
-                                content: msg.content.substring(persona.prefix.length), 
+                                content: msg.content.substring(persona.prefix.length) + (
+                                        msg.attachments.length > 0
+                                  ? "\n\n" + msg.attachments.map(a=>
+                                      `[${a.filename}](https://autumn.revolt.chat/attachments/${a._id}/${a.filename})`
+                                  ).join(" | ")
+                                  :""
+                                ), 
                                 replies: Array.from(msg.reply_ids || []).map(
                                         reply=>({id: reply, mention: false})
                                 )
@@ -83,7 +89,7 @@ const hell = ()=>{
                         .then(_=>msg.delete())
                         .catch(error=>{
                         try{
-                        sendPluginMessage(`Following error occured when attempted to send masqueraded message. Original message will not be deleted
+                        sendPluginMessage(`The following error was returned when masquerade was attempted. The original message will not be deleted
 \`\`\`
 ${error.message}
 
@@ -182,7 +188,7 @@ var PersonaList = ()=>{
                                 let msg = standartDiv()
                                 let text = document.createElement("P")
 
-                                text.innerText = "You have no any personas for masquerade, create first one by clicking \"New\" button"
+                                text.innerText = "You don't have any masks yet. Create one by clicking \"New\" button."
 
                                 msg.append(text)
                                 list.append(msg)
@@ -306,8 +312,8 @@ var MSQ = {
                              // color.placeholder = "Color of username"
 
                                 prefix.setAttribute("description", "You will need to put this at start of message, so make it short and don't make it same as bot's prefix")
-                                avatar.setAttribute("description", "URL of persona's avatar. You can put @[ID of user] to copy someone's avatar")
-                                name.setAttribute("description", "Username of persona")
+                                avatar.setAttribute("description", "URL of the mask's avatar. You can put @[ID of user] to copy someone's avatar.")
+                                name.setAttribute("description", "Username of the mask.")
                              // color.setAttribute("description", "Color of username")
 
                                 var inputHint = standartDiv()
@@ -411,7 +417,7 @@ return {
                 window.removeEventListener("click", onClick)
 
                 const elem = standartDiv()
-                elem.append(document.createTextNode("Plugin has been disabled, it's recomended to reload the page (F5), click here to close"))
+                elem.append(document.createTextNode("The plugin has been disabled; it's recommended to reload the page/app. Click here to close."))
                 document.body.append(elem)
                 elem.addEventListener("click", ()=>elem.remove())
         } catch(e) { console.error(e) }
