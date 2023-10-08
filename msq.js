@@ -85,6 +85,8 @@ const hell = ()=>{
                         try{
                         sendPluginMessage(`Following error occured when attempted to send masqueraded message. Original message will not be deleted
 \`\`\`
+${error.message}
+
 ${error.stack}
 \`\`\``)}catch(e){console.error(e)}
                        })
