@@ -1,27 +1,8 @@
-# Masquerade plugin
-A revolt plugin that makes you able to use masquerade
+# Revolt plugins
 
-## Instalation
-Copy and paste following code to console
-```js
-xhr = new XMLHttpRequest()
-xhr.open("GET", "https://raw.githubusercontent.com/LazyCat2/masquerade-revolt-plugin/main/msq.js")
-xhr.send("")
-xhr.onload = function() {
-  state.plugins.add({
-      format: 1,
-      version: "0.1 Beta",
-      namespace: "LazyCat2",
-      id: "masquerade",
-      entrypoint: xhr.response
-  })
-  window.location.reload()
-};
-```
+Here is plugins I made, they implement features I want to see in the official client.
 
-## Usage
-Type `@MSQ` to access the menu
+You can join [my revolt server](https://rvlt.gg/yrAmk9Zp) to suggest a new plugin or a feature for existing one.
 
-Send message with persona's prefix at the start to use that persona
-
-![Usage (gif)](https://autumn.revolt.chat/attachments/XWZ75RW9RaVPMmkdyRXSDbvPZCX6rUYPXF4sZjLYQc)
+- **[Masquerade](masquerade)** made for masquerade using
+- **[Survive on mobile](survive-on-mobile)** made for console access on mobile
