@@ -463,8 +463,8 @@
 
 						update.addEventListener("click", ()=>{
 							xhr = new XMLHttpRequest()
-							// xhr.open("GET", "https://raw.githubusercontent.com/LazyCat2/revolt-plugins/main/survive-on-mobile/script.js")
-							xhr.open("GET", "http://localhost/survive-on-mobile")
+							xhr.open("GET", "https://raw.githubusercontent.com/LazyCat2/revolt-plugins/main/survive-on-mobile/script.js")
+							
 							xhr.send("")
 							xhr.onload = function() {
 							  state.plugins.add({
