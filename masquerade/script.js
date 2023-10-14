@@ -1,4 +1,4 @@
-const client = ()=>{return controllers.client.getReadyClient()};
+const client = ()=>controllers.client.getReadyClient();
 
 ()=>{
 
@@ -7,12 +7,19 @@ if (!localStorage.MSQ)
                 personas: []
         })
 
+
+const delSvg = '<svg viewBox="0 0 24 24" height="24" width="24" aria-hidden="true" focusable="false" fill="currentColor" xmlns="http://www.w3.org/2000/svg" color="var(--error)" class="StyledIconBase-ea9ulj-0 bWRyML"><path d="M6 7H5v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7H6zm4 12H8v-9h2v9zm6 0h-2v-9h2v9zm.618-15L15 2H9L7.382 4H3v2h18V4z"></path></svg>'
+const editSvg = '<svg viewBox="0 0 24 24" height="18" width="18" aria-hidden="true" focusable="false" fill="currentColor" xmlns="http://www.w3.org/2000/svg" class="StyledIconBase-ea9ulj-0 bWRyML"><path d="M8.707 19.707 18 10.414 13.586 6l-9.293 9.293a1.003 1.003 0 0 0-.263.464L3 21l5.242-1.03c.176-.044.337-.135.465-.263zM21 7.414a2 2 0 0 0 0-2.828L19.414 3a2 2 0 0 0-2.828 0L15 4.586 19.414 9 21 7.414z"></path></svg>'
+const okSvg = '<svg viewBox="0 0 24 24" height="20" width="20" aria-hidden="true" focusable="false" fill="currentColor" xmlns="http://www.w3.org/2000/svg" class="StyledIconBase-ea9ulj-0 VtuNT check"><path d="m10 15.586-3.293-3.293-1.414 1.414L10 18.414l9.707-9.707-1.414-1.414z"></path></svg>'
+const addSvg = '<svg viewBox="0 0 24 24" height="24" width="24" aria-hidden="true" focusable="false" fill="currentColor" xmlns="http://www.w3.org/2000/svg" class="StyledIconBase-ea9ulj-0 bWRyML"><path d="M19 11h-6V5h-2v6H5v2h6v6h2v-6h6z"></path></svg>'
+
 const sendPluginMessage = text=>{
         var message = document.createElement("DIV")
         var usernameContainer = document.createElement("DIV")
         var username = document.createElement("P")
         var badge = document.createElement("DIV") // UserShort__BotBadge-sc-1sbe9n1-0 cYjFcE
         var del = document.createElement("BUTTON")
+        var copy = document.createElement("BUTTON")
         var textElem = document.createElement("P")
 
         username.innerText = "LazyCat2/masquerade"
@@ -23,10 +30,16 @@ const sendPluginMessage = text=>{
         badge.classList.add("UserShort__BotBadge-sc-1sbe9n1-0")
         badge.classList.add("cYjFcE")
 
-        del.innerText = "Hide error"
+        del.innerText = "Hide"
         del.style.marginLeft = '10px'
         del.addEventListener("click", ()=>{
-                message.remove()
+        	message.remove()
+        })
+
+        copy.innerText = "Copy"
+        copy.style.marginLeft = '10px'
+        copy.addEventListener("click", ()=>{
+        	navigator.clipboard.writeText(text)
         })
 
         usernameContainer.style.display = 'flex'
@@ -38,6 +51,7 @@ const sendPluginMessage = text=>{
         usernameContainer.append(username)
         usernameContainer.append(badge)
         usernameContainer.append(del)
+        usernameContainer.append(copy)
 
         message.style.paddingLeft = '65px'
         message.style.backgroundColor = "var(--mention)"
@@ -54,12 +68,11 @@ const hell = ()=>{
                 console.log(c)
                 c.on("message", msg=>{
                         var cancel = false
-                        var persona = JSON.parse(localStorage.MSQ).personas.find(p=>msg.content.startsWith(p.prefix))
+                        if (JSON.stringify(currentPersona) == '{}') return
                                                                         
                         Array.from([
                                 [msg.author._id != c.user._id, "Message was not sent by you."],
-                                [!persona, "`persona` is null (There is probably no prefix.)"],
-                                [!window.location.href.includes(msg.channel_id), "You are selected other channel than message's"], // not sure if I spelled it correctly
+                                [!window.location.href.includes(msg.channel_id), "You are selected other channel than message's"],
                                 [msg.masquerade, "Message already has masquerade"]
                         ]).forEach(cond=>{
                                 if (cancel) return
@@ -72,10 +85,14 @@ const hell = ()=>{
                         c.channels.get(msg.channel_id).sendMessage({
                                 masquerade: {
                                         // colour: persona.color,
-                                        name: persona.name,
-                                        avatar: persona.avatar
+                                        name: currentPersona.name,
+                                        avatar: currentPersona.avatar
                                 },
-                                content: msg.content.substring(persona.prefix.length) + (
+                                content: (
+                                	msg.content.startsWith(currentPersona.prefix)
+                                	? msg.content.substring(currentPersona.prefix.length)
+                                	: msg.content
+                                ) + (
                                         (msg.attachments || []).length > 0
                                   ? "\n\n" + msg.attachments.map(a=>
                                       `[${a.filename}](https://autumn.revolt.chat/attachments/${a._id}/${a.filename})`
@@ -99,19 +116,6 @@ ${error.stack}
                         sendAs.remove()
                         sendAs = null
                 })
-        } else {
-                var alrt = standartDiv()
-                var t = document.createElement("P")
-
-                t.innerText = "WARNING: Masquerade plugin won't work because it can't get client object, click here when client fully loads"
-
-                alrt.addEventListener("click", ()=>{
-                        alrt.remove()
-                        hell()
-                })
-
-                alrt.append(t)
-                document.body.append(alrt)
         }
 }
 
@@ -120,30 +124,283 @@ var menu = null
 var currentPersona = null
 var sendAs = null
 
+const setPersona = data=>{
+	console.log(data)
+	currentPersona = data
+	var avatar = document.querySelector(".MSQ-AVATAR")
+	
+	avatar.style.backgroundImage = `url('${data.avatar??client().user.generateAvatarURL()}')`
+}
+
+
+
+const addAvatarButton = ()=>{
+	if (document.querySelector(".MSQ-AVATAR")) return
+	
+	var container = document.querySelector(".MessageBox__Base-sc-jul4fa-0.jBEnry")
+	var avatar = document.createElement("DIV")
+	var obj = {}
+
+	avatar.style.width = '35px'
+	avatar.style.height = '35px'
+	avatar.style.backgroundImage = `url('${(currentPersona||obj).avatar??client().user.generateAvatarURL()}')`
+	avatar.style.backgroundSize = 'cover'
+	avatar.style.backgroundPosition = 'center'
+	avatar.style.borderRadius = '100%'
+	avatar.style.margin = 'auto 0px auto 5px'
+	avatar.style.cursor = 'pointer'
+	
+	avatar.classList.add("MSQ-AVATAR")
+
+	avatar.addEventListener("click", ()=>{
+	 	document.querySelector(".MessageBox__FloatingLayer-sc-jul4fa-4.QpRyQ").innerHTML = ''
+		if (document.querySelector(".MSQ-MASK-MENU")) return document.querySelector(".MSQ-MASK-MENU").remove()
+
+		var menu = document.createElement("DIV")
+
+		menu.style.backgroundColor = 'var(--secondary-background)'
+		menu.style.width = 'fit-content'
+		menu.style.padding = '0px'
+		menu.style.backdropFilter = 'blur(20px)'
+		menu.style.borderRadius = '0px var(--border-radius) 0px 0px'
+		
+		menu.classList.add("MSQ-MASK-MENU")
+
+		var personaThing = data=>{
+			data = data ?? {}
+			
+			var container = document.createElement("DIV")
+			var maskThing = document.createElement("DIV")
+			var avatar = document.createElement("IMG")
+			var textContainer = document.createElement("DIV")
+			var title = document.createElement("P")
+			var info = document.createElement("P")
+			var buttons = document.createElement("DIV")
+			var del = document.createElement("BUTTON")
+			var edit = document.createElement("BUTTON")
+
+			container.style.width = '250px'
+			container.style.display = 'flex'
+			container.style.alignItems = 'center'
+			container.style.padding = '5px'
+			container.style.margin = '5px'
+			container.style.borderRadius = 'var(--border-radius)'
+			container.style.userSelect = 'none'
+			container.style.cursor = 'pointer'
+			container.style.justifyContent = 'space-between'
+
+			container.addEventListener("click", function (e){
+				if(["BUTTON", "SVG", "PATH"].includes(e.target.tagName)) return
+
+				menu.remove()
+				setPersona(data)
+			})
+
+			maskThing.style.display = 'flex'
+			
+			avatar.style.borderRadius = '100%'
+			avatar.src = data.avatar ?? client().user.generateAvatarURL()
+			avatar.style.width = '40px'
+			avatar.style.height = '40px'
+			avatar.style.margin = '0px 10px 0px 0px'
+
+			title.innerText = data.name ?? client().user.username
+			title.style.margin = '0px'
+
+			var Jdata = JSON.stringify(data)
+			var Jperson = JSON.stringify(currentPersona ?? {})
+			if (Jdata == Jperson) {
+				container.style.backgroundColor = 'var(--primary-background)'
+			}
+			
+			info.innerText = data.prefix ?? (Jdata=='{}' ? 'Your default profile':'[NO PREFIX]')
+			info.style.margin = '0px'
+			info.style.color = 'var(--secondary-foreground)'
+			info.style.fontSize = 'normal'
+
+			del.innerHTML = delSvg
+			del.addEventListener("click", ()=>{
+				container.remove()
+				if (JSON.stringify(data) == JSON.stringify(currentPersona)) setPersona()
+				var savedData = JSON.parse(localStorage.MSQ)
+				savedData.personas.splice(savedData.personas.findIndex(a=>a==data), 1)
+				localStorage.MSQ = JSON.stringify(savedData)
+			})
+
+			edit.innerHTML = editSvg
+			edit.addEventListener("click", ()=>{
+				var mainContainer = document.querySelector(".MessageBox__FloatingLayer-sc-jul4fa-4.QpRyQ")
+				var prefix = document.createElement("INPUT")
+				var avatar = document.createElement("INPUT")
+				var name = document.createElement("INPUT")
+				var done = document.createElement("BUTTON")
+
+				name.value = data.name
+				avatar.value = data.avatar
+				prefix.value = data.prefix
+
+				;([prefix, avatar, name]).forEach(inp=>{
+					inp.style.width = '100%'
+					inp.style.backgroundColor = 'var(--primary-background)'
+					inp.style.border = '1px solid'
+					
+					mainContainer.append(inp)
+				})
+
+				prefix.placeholder = 'Prefix'
+				avatar.placeholder = 'Avatar URL (@ID to to copy someone\'s avatar)'
+				name.placeholder = 'Name'
+
+				done.innerHTML = addSvg
+				done.addEventListener("click", ()=>{
+					var changeMe = JSON.stringify(data) == JSON.stringify(currentPersona)
+					var savedData = JSON.parse(localStorage.MSQ)
+					var index = savedData.personas.findIndex(a=>JSON.stringify(a)==JSON.stringify(data))
+
+					savedData.personas[index] = {
+						prefix: prefix.value,
+						avatar: avatar.value,
+						name: name.value
+					}
+
+					if (changeMe) {
+						setPersona(savedData.personas[index])
+					}
+					
+					localStorage.MSQ = JSON.stringify(savedData)
+
+					 document.querySelector(".MessageBox__FloatingLayer-sc-jul4fa-4.QpRyQ").innerHTML = ''
+				})
+				mainContainer.append(done)
+				mainContainer.style.backgroundColor = 'var(--secondary-background)'
+				mainContainer.style.display = 'flex'
+			})
+
+			buttons.style.display = 'flex'
+
+			buttons.append(del)
+			buttons.append(edit)
+
+			textContainer.append(title)
+			textContainer.append(info)
+			
+			maskThing.append(avatar)
+			maskThing.append(textContainer)
+			
+			container.append(maskThing)
+
+			if (Jdata != '{}')
+				container.append(buttons)
+
+			return container
+		}
+		
+		menu.append(personaThing())
+		JSON.parse(localStorage.MSQ)
+			.personas
+			.forEach(persona=>menu.append(personaThing(persona)))
+			
+		var addMask = document.createElement("DIV")
+		var pluginInfo = document.createElement("DIV")
+		var version = document.createElement("P")
+		var source = document.createElement("A")
+
+		addMask.style.width = '25px'
+		addMask.style.height = '25px'
+		addMask.style.borderRadius = 'var(--border-radius)'
+		addMask.style.backgroundColor = 'var(--primary-background)'
+		addMask.style.display = 'flex'
+		addMask.style.justifyContent = 'center'
+		addMask.style.alignItems = 'center'
+		addMask.style.cursor = 'pointer'
+		addMask.innerHTML = addSvg
+
+		addMask.addEventListener("click", ()=>{
+			var mainContainer = document.querySelector(".MessageBox__FloatingLayer-sc-jul4fa-4.QpRyQ")
+			var prefix = document.createElement("INPUT")
+			var avatar = document.createElement("INPUT")
+			var name = document.createElement("INPUT")
+			var done = document.createElement("BUTTON")
+
+			;([prefix, avatar, name]).forEach(inp=>{
+				inp.style.width = '100%'
+				inp.style.backgroundColor = 'var(--primary-background)'
+				inp.style.border = '1px solid'
+				
+				mainContainer.append(inp)
+			})
+
+			prefix.placeholder = 'Prefix'
+			avatar.placeholder = 'Avatar URL (@ID to to copy someone\'s avatar)'
+			name.placeholder = 'Name'
+
+			avatar.addEventListener("input", ()=>{
+				if (avatar.value.startsWith('@')) {
+				    let user = client().users.get(avatar.value.replace("@", ''))
+				    if (user)
+				        avatar.value = user.generateAvatarURL()
+				}
+			})
+			
+			
+			done.innerHTML = addSvg
+			done.addEventListener("click", ()=>{
+				var savedData = JSON.parse(localStorage.MSQ)
+				var index = savedData.personas.findIndex(a=>JSON.stringify(a)==JSON.stringify(data))
+				var newdata = {
+								prefix: prefix.value,
+								avatar: avatar.value,
+								name: name.value
+							}
+				savedData.personas.push(newdata)
+					
+				localStorage.MSQ = JSON.stringify(savedData)
+
+				pluginInfo.before(personaThing(newdata))
+				
+			 	document.querySelector(".MessageBox__FloatingLayer-sc-jul4fa-4.QpRyQ").innerHTML = ''
+			})
+			
+			mainContainer.append(done)
+			mainContainer.style.backgroundColor = 'var(--secondary-background)'
+			mainContainer.style.display = 'flex'
+		})
+
+		version.innerText = MSQVersion
+		version.style.margin = '0px'
+
+		source.innerText = 'Source code'
+		source.href = "https://github.com/LazyCat2/revolt-plugins/tree/main/masquerade"
+		source.style.textDecoration = 'underline'
+		source.setAttribute("target", "_blank")
+		
+		pluginInfo.style.display = 'flex'
+		pluginInfo.style.justifyContent = 'space-evenly'
+		pluginInfo.style.alignItems = 'center'
+		pluginInfo.style.marginBottom = '5px'
+
+		pluginInfo.append(version)
+		pluginInfo.append(addMask)
+		pluginInfo.append(source)
+
+		menu.append(pluginInfo)
+
+		document.querySelector(".AutoComplete__Base-sc-dtvq9c-0.hkukmG").append(menu)
+	})
+
+	container.prepend(avatar)
+}
+
 const onMessageTextareaInput = function(){
 
         if (!this.value.startsWith("@MSQ")) {
                 if (menu) menu.remove()
                 MSQ.isShowed = false
 
-                var pers = JSON.parse(localStorage.MSQ).personas.find(p=>this.value.startsWith(p.prefix))
-
-                if (pers && pers != currentPersona) {
-                        if (sendAs) {
-                                sendAs.remove()
-                                sendAs = null
-                        }
-                        currentPersona = pers
-                        sendAs = MSQ.elements.sendAs(pers)
-                        document.querySelector('.AutoComplete__Base-sc-dtvq9c-0.hkukmG > div').append(sendAs)
-                } else {
-                        if (sendAs) {
-                                sendAs.remove()
-                                sendAs = null
-                        }
-                        currentPersona = null
-                }
-
+                var pers = JSON.parse(localStorage.MSQ).personas.find(p=>this.value&&this.value.startsWith(p.prefix))
+                if (pers && pers != currentPersona) 
+                	setPersona(pers)
+                
                 return
         }
 
@@ -159,10 +416,13 @@ const onClick = function(){
                 return
         try{
                 updateTextareaEvents()
+                addAvatarButton()
         } catch(a){console.error(a)}
 }
 
-const MSQVersion = Array.from(state.plugins.plugins).find(plugin=>plugin[0]=="LazyCat2/masquerade")[1].version
+const MSQVersion = (
+	Array.from(state.plugins.plugins).find(plugin=>plugin[0]=="LazyCat2/masquerade")
+	??[null, {version:'ERROR'}])[1].version
 
 const standartDiv = ()=>{
         let div = document.createElement("DIV")
@@ -221,7 +481,7 @@ var PersonaList = ()=>{
                                 avatarAndUsername.style.display = 'flex'
                                 avatarAndUsername.style.alignItems = "center"
 
-                                                                delPersona.innerText = "DEL"
+                                delPersona.innerText = "DEL"
                                 delPersona.addEventListener("click", ()=>{
                                         persInfo.remove()
                                         var savedData = JSON.parse(localStorage.MSQ)
@@ -262,7 +522,7 @@ var MSQ = {
                         infoText.style.margin = '0px'
 
                         githubLink.innerText = 'Source code'
-                        githubLink.href = "https://github.com/LazyCat2/masquerade-revolt-plugin"
+                        githubLink.href = "https://github.com/LazyCat2/revolt-plugins/tree/main/masquerade"
                         githubLink.style.textDecoration = 'underline'
                         githubLink.setAttribute("target", "_blank")
 
@@ -363,6 +623,7 @@ var MSQ = {
                         return menu
                 },
                 sendAs: pers=>{
+                		return
                         let tip = standartDiv()
                         let tipText = document.createElement("P")
                         let avatar = document.createElement("IMG")

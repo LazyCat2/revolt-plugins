@@ -10,7 +10,7 @@ xhr.send("")
 xhr.onload = function() {
   state.plugins.add({
       format: 1,
-      version: "0.2 Beta",
+      version: "0.3 Beta",
       namespace: "LazyCat2",
       id: "masquerade",
       entrypoint: xhr.response
