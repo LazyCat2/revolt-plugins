@@ -68,7 +68,7 @@ const hell = ()=>{
                 console.log(c)
                 c.on("message", msg=>{
                         var cancel = false
-                        if (JSON.stringify(currentPersona) == '{}') return
+                        if (['{}', 'null'].includes(JSON.stringify(currentPersona))) return
                                                                         
                         Array.from([
                                 [msg.author._id != c.user._id, "Message was not sent by you."],
