@@ -89,7 +89,7 @@ const hell = ()=>{
                         }
                         channel.sendMessage({
                                 masquerade: {
-                                        colour: (channel.havePermission("ManageRole")) ? persona.color : null,
+                                        colour: (channel.havePermission("ManageRole")) ? currentPersona.color : null,
                                         name: currentPersona.name,
                                         avatar: currentPersona.avatar
                                 },
