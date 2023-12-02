@@ -82,9 +82,14 @@ const hell = ()=>{
                                 }
                         })
                         if (cancel) return
-                        c.channels.get(msg.channel_id).sendMessage({
+                        var channel = c.channels.get(msg.channel_id)
+                        if (!channel.havePermission("Masquerade")) {
+                                sendPluginMessage(`You do not have permission to use masquerade in this channel.`)
+                                return
+                        }
+                        channel.sendMessage({
                                 masquerade: {
-                                        // colour: persona.color,
+                                        colour: (channel.havePermission("ManageRole")) ? persona.color : null,
                                         name: currentPersona.name,
                                         avatar: currentPersona.avatar
                                 },
@@ -474,7 +479,7 @@ var PersonaList = ()=>{
                                 avatar.style.marginRight = '10px'
 
                                 username.innerText = pers.name || client().user.username
-                                //username.style.color = pers.color
+                                username.style.color = pers.color
 
                                 prefix.innerText = pers.prefix
 
@@ -532,7 +537,7 @@ var MSQ = {
                                 let prefix = document.createElement("INPUT")
                                 let avatar = document.createElement("INPUT")
                                 let name   = document.createElement("INPUT")
-                             // let color  = document.createElement("INPUT")
+                             let color  = document.createElement("INPUT")
 
                                 let submit = document.createElement("BUTTON")
                                 let container = standartDiv()
@@ -557,24 +562,24 @@ var MSQ = {
                                                 prefix: prefix.value,
                                                 avatar: avatar.value,
                                                 name: name.value,
-                                             // color: color.value
+                                             color: color.value
                                         })
                                         localStorage.MSQ = JSON.stringify(savedState)
                                 })
 
                                 addPersonaButton.setAttribute("disabled", true)
 
-                             // color.setAttribute("type", "color")
+                                color.setAttribute("type", "color")
 
                                 prefix.placeholder = "Prefix"
                                 avatar.placeholder = "Avatar URL"
                                 name.placeholder = "Name"
-                             // color.placeholder = "Color of username"
+                                color.placeholder = "Color of username"
 
                                 prefix.setAttribute("description", "You will need to put this at start of message, so make it short and don't make it same as bot's prefix")
                                 avatar.setAttribute("description", "URL of the mask's avatar. You can put @[ID of user] to copy someone's avatar.")
                                 name.setAttribute("description", "Username of the mask.")
-                             // color.setAttribute("description", "Color of username")
+                                color.setAttribute("description", "Color of username")
 
                                 var inputHint = standartDiv()
                                 var inputHintText = document.createElement("P")
@@ -583,7 +588,7 @@ var MSQ = {
                                         prefix,
                                         avatar,
                                         name,
-                                     // color
+                                        color
                                 ]).forEach(elem=>{
                                         inputHint.append(inputHintText)
 
