@@ -238,7 +238,7 @@ const addAvatarButton = ()=>{
 				var prefix = document.createElement("INPUT")
 				var avatar = document.createElement("INPUT")
 				var name = document.createElement("INPUT")
-                                let color  = document.createElement("INPUT")
+                                var color  = document.createElement("INPUT")
 				var done = document.createElement("BUTTON")
 
 				name.value = data.name
@@ -330,9 +330,10 @@ const addAvatarButton = ()=>{
 			var prefix = document.createElement("INPUT")
 			var avatar = document.createElement("INPUT")
 			var name = document.createElement("INPUT")
+                        var color  = document.createElement("INPUT")
 			var done = document.createElement("BUTTON")
 
-			;([prefix, avatar, name]).forEach(inp=>{
+			;([prefix, avatar, name, color]).forEach(inp=>{
 				inp.style.width = '100%'
 				inp.style.backgroundColor = 'var(--primary-background)'
 				inp.style.border = '1px solid'
@@ -343,6 +344,8 @@ const addAvatarButton = ()=>{
 			prefix.placeholder = 'Prefix'
 			avatar.placeholder = 'Avatar URL (@ID to to copy someone\'s avatar)'
 			name.placeholder = 'Name'
+                        color.placeholder = "Color of username"
+                        color.setAttribute("type", "color")
 
 			avatar.addEventListener("input", ()=>{
 				if (avatar.value.startsWith('@')) {
@@ -360,7 +363,8 @@ const addAvatarButton = ()=>{
 				var newdata = {
 								prefix: prefix.value,
 								avatar: avatar.value,
-								name: name.value
+								name: name.value,
+                                                                color: color.value
 							}
 				savedData.personas.push(newdata)
 					
