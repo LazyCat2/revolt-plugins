@@ -82,9 +82,14 @@ const hell = ()=>{
                                 }
                         })
                         if (cancel) return
-                        c.channels.get(msg.channel_id).sendMessage({
+                        var channel = c.channels.get(msg.channel_id)
+                        if (!channel.havePermission("Masquerade")) {
+                                sendPluginMessage(`You do not have permission to use masquerade in this channel.`)
+                                return
+                        }
+                        channel.sendMessage({
                                 masquerade: {
-                                        // colour: persona.color,
+                                        colour: (channel.havePermission("ManageRole")) ? currentPersona.color : null,
                                         name: currentPersona.name,
                                         avatar: currentPersona.avatar
                                 },
@@ -233,13 +238,16 @@ const addAvatarButton = ()=>{
 				var prefix = document.createElement("INPUT")
 				var avatar = document.createElement("INPUT")
 				var name = document.createElement("INPUT")
+                                var color  = document.createElement("INPUT")
 				var done = document.createElement("BUTTON")
 
 				name.value = data.name
 				avatar.value = data.avatar
 				prefix.value = data.prefix
+                                color.value = data.color
+                                color.setAttribute("type", "color")
 
-				;([prefix, avatar, name]).forEach(inp=>{
+				;([prefix, avatar, name, color]).forEach(inp=>{
 					inp.style.width = '100%'
 					inp.style.backgroundColor = 'var(--primary-background)'
 					inp.style.border = '1px solid'
@@ -250,6 +258,7 @@ const addAvatarButton = ()=>{
 				prefix.placeholder = 'Prefix'
 				avatar.placeholder = 'Avatar URL (@ID to to copy someone\'s avatar)'
 				name.placeholder = 'Name'
+                                color.placeholder = "Color of username"
 
 				done.innerHTML = addSvg
 				done.addEventListener("click", ()=>{
@@ -260,7 +269,8 @@ const addAvatarButton = ()=>{
 					savedData.personas[index] = {
 						prefix: prefix.value,
 						avatar: avatar.value,
-						name: name.value
+						name: name.value,
+                                                color: color.value
 					}
 
 					if (changeMe) {
@@ -320,9 +330,10 @@ const addAvatarButton = ()=>{
 			var prefix = document.createElement("INPUT")
 			var avatar = document.createElement("INPUT")
 			var name = document.createElement("INPUT")
+                        var color  = document.createElement("INPUT")
 			var done = document.createElement("BUTTON")
 
-			;([prefix, avatar, name]).forEach(inp=>{
+			;([prefix, avatar, name, color]).forEach(inp=>{
 				inp.style.width = '100%'
 				inp.style.backgroundColor = 'var(--primary-background)'
 				inp.style.border = '1px solid'
@@ -333,6 +344,8 @@ const addAvatarButton = ()=>{
 			prefix.placeholder = 'Prefix'
 			avatar.placeholder = 'Avatar URL (@ID to to copy someone\'s avatar)'
 			name.placeholder = 'Name'
+                        color.placeholder = "Color of username"
+                        color.setAttribute("type", "color")
 
 			avatar.addEventListener("input", ()=>{
 				if (avatar.value.startsWith('@')) {
@@ -350,7 +363,8 @@ const addAvatarButton = ()=>{
 				var newdata = {
 								prefix: prefix.value,
 								avatar: avatar.value,
-								name: name.value
+								name: name.value,
+                                                                color: color.value
 							}
 				savedData.personas.push(newdata)
 					
@@ -474,7 +488,7 @@ var PersonaList = ()=>{
                                 avatar.style.marginRight = '10px'
 
                                 username.innerText = pers.name || client().user.username
-                                //username.style.color = pers.color
+                                username.style.color = pers.color
 
                                 prefix.innerText = pers.prefix
 
@@ -532,7 +546,7 @@ var MSQ = {
                                 let prefix = document.createElement("INPUT")
                                 let avatar = document.createElement("INPUT")
                                 let name   = document.createElement("INPUT")
-                             // let color  = document.createElement("INPUT")
+                                let color  = document.createElement("INPUT")
 
                                 let submit = document.createElement("BUTTON")
                                 let container = standartDiv()
@@ -557,24 +571,24 @@ var MSQ = {
                                                 prefix: prefix.value,
                                                 avatar: avatar.value,
                                                 name: name.value,
-                                             // color: color.value
+                                                color: color.value
                                         })
                                         localStorage.MSQ = JSON.stringify(savedState)
                                 })
 
                                 addPersonaButton.setAttribute("disabled", true)
 
-                             // color.setAttribute("type", "color")
+                                color.setAttribute("type", "color")
 
                                 prefix.placeholder = "Prefix"
                                 avatar.placeholder = "Avatar URL"
                                 name.placeholder = "Name"
-                             // color.placeholder = "Color of username"
+                                color.placeholder = "Color of username"
 
                                 prefix.setAttribute("description", "You will need to put this at start of message, so make it short and don't make it same as bot's prefix")
                                 avatar.setAttribute("description", "URL of the mask's avatar. You can put @[ID of user] to copy someone's avatar.")
                                 name.setAttribute("description", "Username of the mask.")
-                             // color.setAttribute("description", "Color of username")
+                                color.setAttribute("description", "Color of username")
 
                                 var inputHint = standartDiv()
                                 var inputHintText = document.createElement("P")
@@ -583,7 +597,7 @@ var MSQ = {
                                         prefix,
                                         avatar,
                                         name,
-                                     // color
+                                        color
                                 ]).forEach(elem=>{
                                         inputHint.append(inputHintText)
 
