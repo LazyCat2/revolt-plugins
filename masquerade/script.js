@@ -83,7 +83,10 @@ const hell = ()=>{
                         })
                         if (cancel) return
                         var channel = c.channels.get(msg.channel_id)
-                        if (!channel.havePermission("Masquerade")) {
+                        if (
+                        	!channel.havePermission("Masquerade")
+                         	&& channel.server_id  // TODO: Fix permissions in groups
+                        ) {
                                 sendPluginMessage(`You do not have permission to use masquerade in this channel.`)
                                 return
                         }
