@@ -386,8 +386,46 @@ const addAvatarButton = async ()=>{
 			mainContainer.style.display = 'flex'
 		})
 
-		version.innerText = MSQVersion
+		version.innerText = 'Ver. ' + MSQVersion
 		version.style.margin = '0px'
+		
+		var MSQupdate = null
+
+		var MSQupdater = new XMLHttpRequest()
+		MSQupdater.open("GET", "https://raw.githubusercontent.com/LazyCat2/revolt-plugins/main/masquerade/version")
+		MSQupdater.send("")
+		MSQupdater.onload = ()=>{
+			console.log(MSQVersion, MSQupdater.response)
+
+			
+			
+		  	if (MSQVersion.trim() != MSQupdater.response.trim()) {
+		  		MSQupdate = document.createElement("P")
+
+		  		MSQupdate.innerText += `Click to update to ${MSQupdater.response}`
+		  		
+		  		MSQupdate.style.cursor = 'pointer'
+		  		MSQupdate.style.textAlign = "center"
+		  		MSQupdate.style.margin = "0"
+
+		  		MSQupdate.addEventListener("click", ()=>{
+		  			var xhr = new XMLHttpRequest()
+		  			xhr.open("GET", "https://raw.githubusercontent.com/LazyCat2/revolt-plugins/main/masquerade/script.js")
+		  			xhr.send("")
+		  			xhr.onload = function() {
+		  			  state.plugins.add({
+		  			      format: 1,
+		  			      version: MSQupdater.response,
+		  			      namespace: "LazyCat2",
+		  			      id: "masquerade",
+		  			      entrypoint: xhr.response
+		  			  })
+		  			  window.location.reload()
+		  			};
+		  		})
+ 				menu.append(MSQupdate)
+		  	}
+		};
 
 		source.innerText = 'Source code'
 		source.href = "https://github.com/LazyCat2/revolt-plugins/tree/main/masquerade"
@@ -404,6 +442,7 @@ const addAvatarButton = async ()=>{
 		pluginInfo.append(source)
 
 		menu.append(pluginInfo)
+		console.log(MSQupdate)
 
 		document.querySelector(".AutoComplete__Base-sc-dtvq9c-0.hkukmG").append(menu)
 	})
