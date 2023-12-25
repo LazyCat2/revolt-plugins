@@ -83,9 +83,10 @@ const hell = ()=>{
                         })
                         if (cancel) return
                         var channel = c.channels.get(msg.channel_id)
+                        console.log("CHANNEL:", channel)
                         if (
                         	!channel.havePermission("Masquerade")
-                         	&& channel.server_id  // TODO: Fix permissions in groups
+                         &&  channel.server_id  // TODO: Fix permissions in groups
                         ) {
                                 sendPluginMessage(`You do not have permission to use masquerade in this channel.`)
                                 return
@@ -121,8 +122,6 @@ ${error.message}
 ${error.stack}
 \`\`\``)}catch(e){console.error(e)}
                        })
-                        sendAs.remove()
-                        sendAs = null
                 })
         }
 }
@@ -130,7 +129,6 @@ ${error.stack}
 setTimeout(hell, 5000)
 var menu = null
 var currentPersona = null
-var sendAs = null
 
 const setPersona = data=>{
 	console.log(data)
@@ -142,8 +140,15 @@ const setPersona = data=>{
 
 
 
-const addAvatarButton = ()=>{
+const addAvatarButton = async ()=>{
 	if (document.querySelector(".MSQ-AVATAR")) return
+	const _ = window.location.href.split('/')
+	const channelID = _[_.length-1]
+	const channel = await client().channels.fetch(channelID)
+	if (
+		!  channel.havePermission("Masquerade")
+	    && window.location.href.includes("server")  // TODO: Fix permissions in groups
+	)   return
 	
 	var container = document.querySelector(".MessageBox__Base-sc-jul4fa-0.jBEnry")
 	var avatar = document.createElement("DIV")
@@ -404,6 +409,33 @@ const addAvatarButton = ()=>{
 	})
 
 	container.prepend(avatar)
+
+	const sendButtonSVG = `m21.426 11.095-17-8A1 1 0 0 0 3.03 4.242l1.212 4.849L12 12l-7.758 2.909-1.212 4.849a.998.998 0 0 0 1.396 1.147l17-8a1 1 0 0 0 0-1.81z`
+	const query = `div > a > svg > path[d="${sendButtonSVG}"]`
+	const sendButton = document.querySelector(query).parentElement.parentElement.parentElement
+	console.log(sendButton)
+	sendButton.addEventListener("contextmenu", e=>{
+		const text = document.getElementById("message").value
+
+		if (
+			!currentPersona
+		 || !text
+		) return e.preventDefault();
+
+		channel.sendMessage({
+		        masquerade: {
+		                colour: (channel.havePermission("ManageRole")) ? currentPersona.color : null,
+		                name: currentPersona.name,
+		                avatar: currentPersona.avatar
+		        },
+		        content: (
+		        	text.startsWith(currentPersona.prefix)
+		        	? text.substring(currentPersona.prefix.length)
+		        	: text
+		        )
+		})
+		return e.preventDefault();
+	})
 }
 
 const onMessageTextareaInput = function(){
@@ -433,6 +465,38 @@ const onClick = function(){
                 updateTextareaEvents()
                 addAvatarButton()
         } catch(a){console.error(a)}
+
+        if (
+        	currentPersona
+        &&  JSON.parse(localStorage.MSQ).rightClickHintShown != true
+        ) {
+        	const sendButtonSVG = `m21.426 11.095-17-8A1 1 0 0 0 3.03 4.242l1.212 4.849L12 12l-7.758 2.909-1.212 4.849a.998.998 0 0 0 1.396 1.147l17-8a1 1 0 0 0 0-1.81z`
+        	const query = `div > a > svg > path[d="${sendButtonSVG}"]`
+        	const sendButton = document.querySelector(query).parentElement.parentElement.parentElement
+        	
+        	if (sendButton && !document.getElementById("RightClickToSendHint")) {
+        		const hint = document.createElement("DIV")
+        		const hintText = document.createElement("P")
+        		
+        		hintText.innerText = "Right click or hold send button to send masked message without reposting\nClick to close"
+        		hintText.style.margin = "0"
+        		hintText.style.userSelect = "none"
+
+				hint.style.padding = "10px"
+				hint.style.backgroundColor = "var(--message-box)"
+				
+				hint.setAttribute("id", "RightClickToSendHint")
+
+				hint.addEventListener("click", ()=>hint.remove())
+        		
+        		hint.appendChild(hintText)
+        		document.querySelector('.MessageBox__FloatingLayer-sc-jul4fa-4.QpRyQ').appendChild(hint)
+
+        		var data = JSON.parse(localStorage.MSQ)
+        		data.rightClickHintShown = true
+        		localStorage.MSQ = JSON.stringify(data)
+        	}
+        }
 }
 
 const MSQVersion = (
@@ -636,32 +700,6 @@ var MSQ = {
                         menu.appendChild(infoBox)
 
                         return menu
-                },
-                sendAs: pers=>{
-                		return
-                        let tip = standartDiv()
-                        let tipText = document.createElement("P")
-                        let avatar = document.createElement("IMG")
-                        let username = document.createElement("P")
-
-                        tipText.innerText = "This message will be sent as"
-
-                        avatar.src = pers.avatar || client().user.generateAvatarURL()
-                        avatar.style.borderRadius = '100%'
-                        avatar.style.maxWidth = '30px'
-                        avatar.style.maxHeight = '30px'
-                        avatar.style.margin = '0px 10px'
-
-                        username.innerText = pers.name || client().user.username
-                        username.style.color = pers.color
-
-                        tip.style.justifyContent = "left"
-
-                        tip.append(tipText)
-                        tip.append(avatar)
-                        tip.append(username)
-
-                        return tip
                 }
         }
 }
