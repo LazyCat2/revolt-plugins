@@ -53,13 +53,18 @@
 		type.style.fontSize = 'small'
 		type.style.margin = '0px 0px 5px 0px'		
 
+		var asJSON = a
+		
+		try { asJSON = JSON.stringify(a) }
+		catch(_){}
+		
 		text.innerText = data.args.map(a=>{
 			if (a == null)
 				return 'null'
 				
 			return typeof a == 'object' && a != null
 		  ? a.stack
-		 || JSON.stringify(a)
+		 || asJSON
 		  : a
 		}
 			
