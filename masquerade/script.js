@@ -253,8 +253,8 @@ const addAvatarButton = async ()=>{
 				avatar.value = data.avatar
 				prefix.value = data.prefix
                 color.value = data.color
+                
                 color.setAttribute("type", "color")
-
 				;([prefix, avatar, name, color]).forEach(inp=>{
 					inp.style.width = '100%'
 					inp.classList.add("bEeAEn")
@@ -339,6 +339,7 @@ const addAvatarButton = async ()=>{
 			var name = document.createElement("INPUT")
                         var color  = document.createElement("INPUT")
 			var done = document.createElement("BUTTON")
+			var toggleColorType = document.createElement("BUTTON")
 
 			;([prefix, avatar, name, color]).forEach(inp=>{
 				inp.style.width = '100%'
@@ -361,6 +362,10 @@ const addAvatarButton = async ()=>{
 				}
 			})
 			
+			toggleColorType.innerText = "Toggle text / color"
+			toggleColorType.addEventListener("click", ()=>{
+				color.setAttribute("type", color.getAttribute("type") == "color" ? "text":"color")
+			})
 			
 			done.innerHTML = addSvg
 			done.addEventListener("click", ()=>{
@@ -381,7 +386,9 @@ const addAvatarButton = async ()=>{
 			 	document.querySelector(".MessageBox__FloatingLayer-sc-jul4fa-4.QpRyQ").innerHTML = ''
 			})
 			
+			mainContainer.append(toggleColorType)
 			mainContainer.append(done)
+			
 			mainContainer.style.backgroundColor = 'var(--secondary-background)'
 			mainContainer.style.display = 'flex'
 		})
