@@ -1,6 +1,7 @@
 const client = ()=>controllers.client.getReadyClient();
 
 ()=>{
+const main = ()=>{
 
 if (!localStorage.MSQ)
         localStorage.MSQ = JSON.stringify({
@@ -786,3 +787,7 @@ return {
     
     }
 }}
+
+try { main() } catch(e) { console.error("[MSQ]", e) }
+
+}
