@@ -1,6 +1,6 @@
 # Revolt plugins
 
-Here is plugins I made, they implement features I want to see in the official client.
+Here are plugins I made, they implement features I want to see in the official client. Use them at your risk because they may crash (not always, but it happens sometime because of my poor code skills) and you will not be able to remove them because it will throw an error when onUnload is executed. In case if it happens clear your cookies. Update plugins only like one hour or more after last commit, so there is more chance for code to be complitely tested.
 
 You can join [my revolt server](https://rvlt.gg/yrAmk9Zp) to suggest a new plugin or a feature for existing one.
 

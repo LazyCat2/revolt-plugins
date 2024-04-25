@@ -1,6 +1,6 @@
 const client = ()=>controllers.client.getReadyClient();
 
-()=>{ try { 
+()=>{
 if (!localStorage.MSQ)
         localStorage.MSQ = JSON.stringify({
                 personas: []
@@ -765,7 +765,6 @@ const updateTextareaEvents =()=>{
 
 window.addEventListener("click", onClick)
 MSQ.log("Plugin loaded, type @MSQ into message input")
-} catch(e) { console.error("[MSQ]", e) } 
 
 return {
         onClient: c => {
