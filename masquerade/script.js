@@ -190,6 +190,7 @@ const addAvatarButton = async ()=>{
 			var buttons = document.createElement("DIV")
 			var del = document.createElement("BUTTON")
 			var edit = document.createElement("BUTTON")
+			var toggleColorType = document.createElement("BUTTON")
 
 			container.style.width = '250px'
 			container.style.display = 'flex'
@@ -264,8 +265,13 @@ const addAvatarButton = async ()=>{
 				prefix.placeholder = 'Prefix'
 				avatar.placeholder = 'Avatar URL (@ID to to copy someone\'s avatar)'
 				name.placeholder = 'Name'
-                color.placeholder = "Color of username"
+                		color.placeholder = "Color of username"
 
+				toggleColorType.innerText = "Toggle text / color"
+				toggleColorType.addEventListener("click", ()=>{
+					color.setAttribute("type", color.getAttribute("type") == "color" ? "text":"color")
+				})
+				
 				done.innerHTML = addSvg
 				done.addEventListener("click", ()=>{
 					var changeMe = JSON.stringify(data) == JSON.stringify(currentPersona)
@@ -287,6 +293,7 @@ const addAvatarButton = async ()=>{
 
 					 document.querySelector(".MessageBox__FloatingLayer-sc-jul4fa-4.QpRyQ").innerHTML = ''
 				})
+				mainContainer.append(toggleColorType)
 				mainContainer.append(done)
 				mainContainer.style.backgroundColor = 'var(--secondary-background)'
 				mainContainer.style.display = 'flex'
