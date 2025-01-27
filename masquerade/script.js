@@ -265,7 +265,7 @@ const addAvatarButton = async ()=>{
 				prefix.placeholder = 'Prefix'
 				avatar.placeholder = 'Avatar URL (@ID to to copy someone\'s avatar)'
 				name.placeholder = 'Name'
-                		color.placeholder = "Color of username"
+				color.placeholder = "Color of username"
 
 				toggleColorType.innerText = "Toggle text / color"
 				toggleColorType.addEventListener("click", ()=>{
