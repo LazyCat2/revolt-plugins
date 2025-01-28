@@ -2,6 +2,30 @@
 A revolt plugin that makes you able to use console in mobile and get notified about any error/warning.
 
 ## Instalation
+### Using adress bar
+Not every browser supports it.
+If there is any error, it will not be shown.
+
+1. Type `javascript:` in adress bar. Do not press enter.
+2. Paste this: ```js
+xhr = new XMLHttpRequest();
+xhr.open("GET", "https://raw.githubusercontent.com/LazyCat2/revolt-plugins/main/survive-on-mobile/script.js");
+xhr.send("");
+xhr.onload = function() {
+  state.plugins.add({
+      format: 1,
+      version: "0.1 Beta",
+      namespace: "LazyCat2",
+      id: "Survive on mobile",
+      entrypoint: xhr.response
+  });
+  window.location.reload();
+};
+``` As result you'll have something like this: `javascript:xhr = ...`
+3. Now press enter.
+
+
+### Using dev tools
 You need PC to install this plugin.
 [Learn more](https://developer.chrome.com/docs/devtools/remote-debugging/) about Chrome USB debugging
 
@@ -13,9 +37,9 @@ You need PC to install this plugin.
 6. Click `inspect`
 7. Copy and paste following code to console.
 ```js
-xhr = new XMLHttpRequest()
-xhr.open("GET", "https://raw.githubusercontent.com/LazyCat2/revolt-plugins/main/survive-on-mobile/script.js")
-xhr.send("")
+xhr = new XMLHttpRequest();
+xhr.open("GET", "https://raw.githubusercontent.com/LazyCat2/revolt-plugins/main/survive-on-mobile/script.js");
+xhr.send("");
 xhr.onload = function() {
   state.plugins.add({
       format: 1,
@@ -23,8 +47,8 @@ xhr.onload = function() {
       namespace: "LazyCat2",
       id: "Survive on mobile",
       entrypoint: xhr.response
-  })
-  window.location.reload()
+  });
+  window.location.reload();
 };
 ```
 

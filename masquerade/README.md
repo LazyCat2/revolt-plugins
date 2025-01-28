@@ -55,3 +55,7 @@ To steal user's avatar, type `@ID`, for example if user's ID is 123ABC, you need
 3. Send message by pressing Enter or by right-clicking send button
 
 ![This GIF shows you how to send a message with mask](https://autumn.revolt.chat/attachments/QCuLiNpqeXCLETmuf5ttPDpe17caGJl9XZqSDkDNAN/HowToSend.gif)
+
+## Troubleshooting
+1. If there is no your avatar in bottom pannel, check if you have masquerade permission
+2. See [Troubleshooting](https://github.com/LazyCat2/revolt-plugins/#troubleshooting) in repo's README.md
