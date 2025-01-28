@@ -1,0 +1,32 @@
+[
+	{
+		"name": "Neocat by volpeon.ink",
+		"publisher": "LazyCat",
+		"emojis": {
+			"01JB9VYKPWYPYAK9FKJGZ0BMK9": { "name": "cat"        },
+			"01JB9VY3X8W9D47S8J7CFMJNYC": { "name": "blep"       },
+			"01JB9VYQCPNFF4MN9YJ1CSKVQJ": { "name": "happy"      },
+			"01JB9VYR9FFST59Z8A1HVA1RPW": { "name": "happy_blep" },
+			"01JB9VYFNPQWEZHENXG943A22A": { "name": "boop_happy" },
+			"01JB9VYJK4E8TG386YMKZSGXT9": { "name": "box"        },
+			"01JB9VYNV2R0GVTYXBW2NB8QYT": { "name": "confused"   },
+			"01JB9VYPK0J795KKTN1VE8F1TV": { "name": "cute_reach" },
+			"01JB9VYTM2WACH85DYWDFWS8QM": { "name": "hug"        },
+			"01JB9VYW1WFMAJ1W8VHJDEMWWH": { "name": "hug_heart"  },
+			"01JB9VYWYPVWFWQJEX4ESM17DB": { "name": "kisser"     },
+			"01JB9VYXKH8FPR95NT02Q4RX75": { "name": "melt"       },
+			"01JB9VYYE72GA0E9KPSSN2E35Y": { "name": "melt_2"     },
+			"01JB9VYZ62VAVE58DZ9BH6XSTS": { "name": "melt_3"     },
+			"01JB9VZ079R6G72BR14ZP2MX1J": { "name": "nom_cookie" },
+			"01JB9VZ0ZJKV3R2VHSK8RVX7NZ": { "name": "pat_happy"  },
+			"01JB9VZ30Y974RYFQDNYGE2333": { "name": "pensive"    },
+			"01JB9VZ4E296DKD9MAX9WPS74V": { "name": "reach"      },
+			"01JB9VZ6258MDD5WXFKWHNPWJ0": { "name": "shocked"    },
+			"01JB9VZ7Q0TRWS26VTRQ7AQV2Q": { "name": "snuggle"    },
+			"01JB9VZ9YZVBR3ZY3VQXQWG6DX": { "name": "thumbsdown" },
+			"01JB9VZAQPQ9W4K7NY0TAAKWZZ": { "name": "thumbsup"   },
+			"01JB9VZBXAP3NAG7TKV53CDM3K": { "name": "uwu"        }
+		}
+	}
+]
+ 
