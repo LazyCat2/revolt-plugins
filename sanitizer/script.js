@@ -55,21 +55,19 @@
 	        if (mutation.type === 'childList') {
 	            mutation.addedNodes.forEach(node => {
 	                if (
-	                	node.nodeType === Node.ELEMENT_NODE
-	                 && node.children.length === 0
-	                ) {
-	               		node.innerText = sanitize(node.innerText);
-	                }
+	                	node.nodeType !== Node.ELEMENT_NODE
+	                 || node.children.length > 0
+	                ) return;
 
-	               	/*for (let query of [
+	               	for (let query of [
 	               		".sc-dmlqKv.iBmOin",
 	               		".UserShort__Name-sc-1sbe9n1-1",
-	               		".UserShort__Name-sc-1sbe9n1-1.author"
 	               	]) {
 	               		if (node.matches(query)) {
+		               		node.innerText = sanitize(node.innerText);
 	               			return;
 	               		}
-	               	}*/
+	               	}
 	            })
 	        }
 	    }
