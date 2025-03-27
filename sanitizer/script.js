@@ -40,7 +40,7 @@
 		target.forEach((char, index) => {
 		    fonts.forEach((font) => {
 		    	if (!target.includes(font[index])) {
-		    		text = text.replace(font[index], char)
+		    		text = text.replaceAll(font[index], char)
 		    	}
 		    })
 		});
