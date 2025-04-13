@@ -90,12 +90,18 @@ const hell = ()=>{
                                 sendPluginMessage(`You do not have permission to use masquerade in this channel.`)
                                 return
                         }
+                        var msqData = {}
+						if (channel.havePermission("ManageRole") && currentPersona.color) 
+							msqData.colour = currentPersona.colour
+
+						if (currentPersona.name)
+							msqData.name = currentPersona.name
+
+						if (currentPersona.avatar)						
+							msqData.avatar = currentPersona.avatar
+                        
                         channel.sendMessage({
-                                masquerade: {
-                                        colour: (channel.havePermission("ManageRole")) ? currentPersona.color : null,
-                                        name: currentPersona.name,
-                                        avatar: currentPersona.avatar
-                                },
+                                masquerade: msqData,
                                 content: (
                                 	msg.content.startsWith(currentPersona.prefix)
                                 	? msg.content.substring(currentPersona.prefix.length)
@@ -474,17 +480,31 @@ const addAvatarButton = async ()=>{
 		 || !text
 		) return e.preventDefault();
 
+		var msqData = {}
+
+		if (channel.havePermission("ManageRole") && currentPersona.color) 
+			msqData.colour = currentPersona.colour
+		if (currentPersona.name)
+			msqData.name = currentPersona
+		if (currentPersona.avatar)						
+			msqData.avatar = currentPersona.avatar	                        
+
 		channel.sendMessage({
-		        masquerade: {
-		                colour: (channel.havePermission("ManageRole")) ? currentPersona.color : null,
-		                name: currentPersona.name,
-		                avatar: currentPersona.avatar
-		        },
-		        content: (
-		        	text.startsWith(currentPersona.prefix)
-		        	? text.substring(currentPersona.prefix.length)
-		        	: text
-		        )
+        		masquerade: msqData,
+        		content: (
+         		msg.content.startsWith(currentPersona.prefix)
+         		? msg.content.substring(currentPersona.prefix.length)
+         		: msg.content
+        		) + (
+                		(msg.attachments || []).length > 0
+          		? "\n\n" + msg.attachments.map(a=>
+              		`[${a.filename}](https://autumn.revolt.chat/attachments/${a._id}/${a.filename})`
+          		).join(" | ")
+          		:""
+        		), 
+        		replies: Array.from(msg.reply_ids || []).map(
+                		reply=>({id: reply, mention: false})
+        		)
 		})
 		return e.preventDefault();
 	})
@@ -496,9 +516,11 @@ const onMessageTextareaInput = function(){
                 if (menu) menu.remove()
                 MSQ.isShowed = false
 
-                var pers = JSON.parse(localStorage.MSQ).personas.find(p=>this.value&&this.value.startsWith(p.prefix))
-                if (pers && pers != currentPersona) 
-                	setPersona(pers)
+				if (this.value) {
+                	var pers = JSON.parse(localStorage.MSQ).personas.find(p=>p.prefix.length&&this.value.startsWith(p.prefix))
+                	if (pers && pers != currentPersona) 
+                		setPersona(pers)
+				}
                 
                 return
         }
