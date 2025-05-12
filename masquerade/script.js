@@ -1,9 +1,28 @@
 const client = ()=>controllers.client.getReadyClient();
 
+function saveMasks() {
+  const blob = new Blob([JSON.stringify(JSON.parse(localStorage.MSQ).personas)], { type: 'text/plain' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+
+  a.href = url
+  a.download = "masks.json"
+  
+  document.body.appendChild(a);
+  a.click()
+  
+  setTimeout(() => {
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+  }, 100)
+}
+
+
 ()=>{
 if (!localStorage.MSQ)
         localStorage.MSQ = JSON.stringify({
-                personas: []
+                personas: [],
+                
         })
 
 
@@ -323,17 +342,68 @@ const addAvatarButton = async ()=>{
 
 			return container
 		}
+
+		var masksContainer = document.createElement("div")
+
+		masksContainer.style.maxHeight = "min(calc(100vh - 250px), 500px)"
+		masksContainer.style.overflow = "scroll"
+		masksContainer.append(personaThing())
 		
-		menu.append(personaThing())
-		JSON.parse(localStorage.MSQ)
+		menu.append(masksContainer)
+		
+		var masks = JSON.parse(localStorage.MSQ)
 			.personas
-			.forEach(persona=>menu.append(personaThing(persona)))
-			
+
+		masks.forEach(persona=>masksContainer.append(personaThing(persona)))
+		
 		var addMask = document.createElement("DIV")
 		var pluginInfo = document.createElement("DIV")
 		var version = document.createElement("P")
 		var source = document.createElement("A")
 
+		var importExport = document.createElement("div")
+		var imprtInput = document.createElement("input")
+		var imprt = document.createElement("button")
+		var exprt = masks.length > 0 ? document.createElement("button") : null
+		
+		imprt.innerText = "Import masks"
+		imprtInput.type = "file"
+		imprtInput.style.display = "none"
+		imprt.addEventListener("click", ()=>imprtInput.click())
+		importExport.append(imprtInput, imprt)
+
+		imprtInput.addEventListener("change", ()=>{
+			var file = imprtInput.files[0]
+			if (!file) return
+
+			const reader = new FileReader();
+			
+			reader.onload = (event) => {
+				if (!confirm("ALL your masks will be permanently REPLACED by new ones. Your current masks will be REMOVED and new ones added.")) return
+				
+			 	var data = JSON.parse(localStorage.MSQ)
+			 	data.personas = JSON.parse(event.target.result)
+			 	localStorage.MSQ = JSON.stringify(data)
+			  	menu.remove()
+			};
+			
+			reader.onerror = () => {
+			  console.error("Error reading file");
+			};
+			
+			reader.readAsText(file);
+		})
+		
+		if (exprt) {
+			importExport.append(exprt)
+			
+			exprt.innerText = "Export masks"
+			exprt.addEventListener("click", saveMasks)
+		}
+	
+		menu.append(importExport)
+		importExport.style.display = "flex"
+		
 		addMask.style.width = '25px'
 		addMask.style.height = '25px'
 		addMask.style.borderRadius = 'var(--border-radius)'
@@ -349,7 +419,7 @@ const addAvatarButton = async ()=>{
 			var prefix = document.createElement("INPUT")
 			var avatar = document.createElement("INPUT")
 			var name = document.createElement("INPUT")
-                        var color  = document.createElement("INPUT")
+            var color  = document.createElement("INPUT")
 			var done = document.createElement("BUTTON")
 			var toggleColorType = document.createElement("BUTTON")
 
@@ -415,8 +485,6 @@ const addAvatarButton = async ()=>{
 		MSQupdater.send("")
 		MSQupdater.onload = ()=>{
 			console.log(MSQVersion, MSQupdater.response)
-
-			
 			
 		  	if (MSQVersion.trim() != MSQupdater.response.trim()) {
 		  		MSQupdate = document.createElement("P")
@@ -770,7 +838,7 @@ var MSQ = {
                         infoBox.appendChild(addPersonaButton)
                         infoBox.appendChild(githubLink)
 
-                        menu.appendChild(PersonaList())
+                        masksContainer.appendChild(PersonaList())
                         menu.appendChild(infoBox)
 
                         return menu
