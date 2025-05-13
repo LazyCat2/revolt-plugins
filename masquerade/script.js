@@ -128,7 +128,7 @@ const hell = ()=>{
                                 ) + (
                                         (msg.attachments || []).length > 0
                                   ? "\n\n" + msg.attachments.map(a=>
-                                      `[${a.filename}](https://autumn.revolt.chat/attachments/${a._id}/${a.filename})`
+                                      `[${a.filename}](https://cdn.revoltusercontent.com/attachments/${a._id})`
                                   ).join(" | ")
                                   :""
                                 ), 
