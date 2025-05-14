@@ -3,7 +3,8 @@ A revolt plugin that makes you able to use masquerade.
 
 ## Instalation
 
-Copy and paste following code to console.
+1. Open console by pressing `CTRL` + `SHIFT` + `I`
+2. Copy and paste following code to console.
 ```js
 xhr = new XMLHttpRequest()
 xhr.open("GET", "https://raw.githubusercontent.com/LazyCat2/revolt-plugins/main/masquerade/script.js")
@@ -25,21 +26,13 @@ You can use [remote debugging](https://developer.chrome.com/docs/devtools/remote
 ## Usage
 ### Create a mask
 
-**Normal way**
 1. Click on your avatar, it should be on the left side
 2. Click **`+`** button
 3. Fill inputs and click **`+`**
 
 To steal user's avatar, type `@ID`, for example if user's ID is 123ABC, you need to type `@123ABC`
 
-**Legacy way**
-1. Type `@MSQ` into message input
-2. Click **`Add`** button
-3. Fill inputs and click **`+`**
-
-To steal user's avatar, type `@ID`, for example if user's ID is 123ABC, you need to type `@123ABC`
-
-![This GIF shows you how to create a mask](https://autumn.revolt.chat/attachments/SDDxYUuiQvL0BtR0qtMY7a9Ub2JgZhLHl8zb3x-c6c)
+![This GIF shows you how to create a mask](https://cdn.revoltusercontent.com/attachments/SDDxYUuiQvL0BtR0qtMY7a9Ub2JgZhLHl8zb3x-c6c)
 
 ### Send masked message
 
